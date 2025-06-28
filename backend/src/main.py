@@ -1,8 +1,48 @@
-from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from typing import List
 
-app = FastAPI()
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from src.auth.router import router as auth_router
+from src.config import settings
+from src.database import engine, metadata, session
+from src.tasks import models
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    metadata.create_all(engine)
+    await session.connect()
+    yield
+    await session.disconnect()
+
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.API_V1_STR,
+    description="TomoPlan is an AI-powered task management application that helps you prioritize your daily tasks by asking you 3 things to do tomorrow at bedtime, and then organizes and prioritizes your tasks based on your inputs. It also allows you to measure your progress and stay on track. With TomoPlan, you can avoid wasting your time on unimportant tasks and focus on what really matters.",
+    lifespan=lifespan,
+)
+
+
+def get_cors_origins() -> List[str]:
+    if isinstance(settings.BACKEND_CORS_ORIGINS, str):
+        return [origin.strip() for origin in settings.BACKEND_CORS_ORIGINS.split(",")]
+    return [str(origin) for origin in settings.BACKEND_CORS_ORIGINS]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=get_cors_origins(),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"message": "Welcome to TomoPlan!"}
+
+
+app.include_router(auth_router)
