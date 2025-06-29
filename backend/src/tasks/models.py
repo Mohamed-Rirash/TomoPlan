@@ -1,7 +1,6 @@
 # src/tasks/models.py
 import uuid
 from datetime import datetime
-from enum import Enum as PyEnum
 
 from sqlalchemy import (
     Boolean,
@@ -17,14 +16,7 @@ from sqlalchemy import (
 )
 
 from src.database import metadata
-
-
-class TaskPriority(str, PyEnum):
-    LOW = "LOW"
-    MEDIUM = "MEDIUM"
-    HIGH = "HIGH"
-    CRITICAL = "CRITICAL"
-
+from src.tasks.utils import TaskPriority
 
 task_table = Table(
     "tasks",
@@ -39,5 +31,3 @@ task_table = Table(
         "created_at", DateTime(timezone=True), server_default=func.now(), nullable=False
     ),
 )
-
-Index("idx_task_name", task_table.c.name)

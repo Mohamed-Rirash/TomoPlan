@@ -20,7 +20,7 @@ async def read_all_tasks(limit: int, page: int, db) -> list[dict]:
     return tasks
 
 
-async def read_task_by_id(id: uuid.UUID, db) -> dict | None:
+async def read_task_by_id(id: str, db) -> dict | None:
     query = select(task_table).where(task_table.c.id == id)
     result = await db.fetch_one(query)
 
@@ -51,7 +51,7 @@ async def create_task(data, db):
     return task_dict
 
 
-async def update_task(id: uuid.UUID, data, db):
+async def update_task(id: str, data, db):
     task_data = data.dict(exclude_unset=True)
 
     if "due_date" in task_data:
@@ -63,6 +63,6 @@ async def update_task(id: uuid.UUID, data, db):
     await db.execute(query)
 
 
-async def delete_task(id: uuid.UUID, db):
+async def delete_task(id: str, db):
     query = task_table.delete().where(task_table.c.id == id)
     await db.execute(query)

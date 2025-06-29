@@ -1,11 +1,8 @@
-from enum import Enum
+from enum import Enum as PyEnum
 
 
-class TaskPriority(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
-
-# This file is kept for future utility functions
-# TaskPriority is defined in models.py
+class TaskPriority(str, PyEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"

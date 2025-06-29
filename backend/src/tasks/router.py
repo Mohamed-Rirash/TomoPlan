@@ -3,7 +3,13 @@ from fastapi import APIRouter, Depends
 
 from src.dependency import get_db
 from src.tasks.schemas import Task, TaskCreate, TaskUpdate
-from src.tasks.services import create_task, read_all_tasks
+from src.tasks.services import (
+    create_task,
+    delete_task,
+    read_all_tasks,
+    read_task_by_id,
+    update_task,
+)
 
 router = APIRouter(
     prefix="/tasks",
@@ -21,7 +27,7 @@ async def get_tasks(limit: int = 10, page: int = 1, db: Database = Depends(get_d
 # get task by id
 @router.get("/{id}", response_model=Task)
 async def get_task(id: str, db: Database = Depends(get_db)):
-    pass
+    return await read_task_by_id(id, db)
 
 
 # post atask
@@ -32,11 +38,11 @@ async def add_task(task: TaskCreate, db: Database = Depends(get_db)):
 
 # update task
 @router.put("/{id}", response_model=Task)
-async def update_task(id: str, task: TaskUpdate):
-    pass
+async def Edit_task(id: str, task: TaskUpdate, db: Database = Depends(get_db)):
+    return await update_task(id, task, db)
 
 
 # delete task
 @router.delete("/{id}")
-async def delete_task(id: str):
-    pass
+async def Remove_task(id: str, db: Database = Depends(get_db)):
+    return await delete_task(id, db)
