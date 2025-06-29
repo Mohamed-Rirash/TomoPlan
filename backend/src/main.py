@@ -6,21 +6,50 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.auth.router import router as auth_router
 from src.config import settings
-from src.database import engine, metadata, session
-from src.tasks import models
+from src.database import session
+from src.initdb import init
+from src.tasks.router import router as tasks_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    metadata.create_all(engine)
-    await session.connect()
-    yield
-    await session.disconnect()
+    # Initialize tables
+    try:
+        await init()
+    except Exception as e:
+        print(f"Failed to initialize database: {e}")
+        raise
+
+    # Connect to database
+    try:
+        await session.connect()
+        print("Database connected successfully")
+    except Exception as e:
+        print(f"Failed to connect to database: {e}")
+        raise
+
+    try:
+        yield
+    finally:
+        # Disconnect from database
+        try:
+            await session.disconnect()
+            print("Database disconnected successfully")
+        except Exception as e:
+            print(f"Error disconnecting from database: {e}")
 
 
+DESCRIPTION = """
+    TomoPlan is an AI-powered task management application that helps you 
+    prioritize your daily tasks by asking you 3 things to do 
+    tomorrow at bedtime, and then organizes and prioritizes your
+    progress and stay on track. With TomoPlan, you can avoid wasting your
+    time on unimportant tasks and focus on what really matters.
+"""
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.API_V1_STR,
-    description="TomoPlan is an AI-powered task management application that helps you prioritize your daily tasks by asking you 3 things to do tomorrow at bedtime, and then organizes and prioritizes your tasks based on your inputs. It also allows you to measure your progress and stay on track. With TomoPlan, you can avoid wasting your time on unimportant tasks and focus on what really matters.",
+    description=DESCRIPTION,
     lifespan=lifespan,
 )
 
@@ -45,4 +74,5 @@ def read_root():
     return {"message": "Welcome to TomoPlan!"}
 
 
+app.include_router(tasks_router)
 app.include_router(auth_router)

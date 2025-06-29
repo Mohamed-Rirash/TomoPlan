@@ -5,9 +5,17 @@ from src.config import settings
 
 SQLALCHEMY_DATABASE_URI = str(settings.SQLALCHEMY_DATABASE_URI)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI.replace("+asyncpg", ""))
-# SQLALCHEMY_DATABASE_URI = "sqlite:///./test.db"
-# engine = create_engine(SQLALCHEMY_DATABASE_URI)
+# Create engine with timezone support
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URI.replace("+asyncpg", ""),
+    pool_pre_ping=True,
+    pool_recycle=300,
+)
+
 metadata = MetaData()
 
-session = Database(SQLALCHEMY_DATABASE_URI)
+# Create database session with proper configuration
+session = Database(
+    SQLALCHEMY_DATABASE_URI,
+    force_rollback=False,
+)

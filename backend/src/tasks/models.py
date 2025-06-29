@@ -1,37 +1,43 @@
+# src/tasks/models.py
 import uuid
+from datetime import datetime
 from enum import Enum as PyEnum
 
-from sqlalchemy import UUID, Boolean, Column, DateTime, Index, String, Table, Text, Enum
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    Index,
+    String,
+    Table,
+    Text,
+    Uuid,
+    func,
+)
 
 from src.database import metadata
 
 
-class TaskPriority(PyEnum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
+class TaskPriority(str, PyEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
 
 task_table = Table(
     "tasks",
     metadata,
-    Column(
-        "id",
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid5(uuid.NAMESPACE_DNS, "task"),
-    ),
+    Column("id", Uuid, primary_key=True, default=uuid.uuid4),
     Column("name", String(100), nullable=False),
     Column("description", Text, nullable=False),
-    Column("due_date", DateTime, nullable=False),
-    Column(
-        "priority",
-        Enum(TaskPriority),
-        nullable=False,
-    ),
+    Column("due_date", DateTime(timezone=True), nullable=True),
+    Column("priority", Enum(TaskPriority), nullable=False, default=TaskPriority.LOW),
     Column("is_done", Boolean, nullable=False),
+    Column(
+        "created_at", DateTime(timezone=True), server_default=func.now(), nullable=False
+    ),
 )
-index = Index("idx_task_id", task_table.c.id)
 
-
-
+Index("idx_task_name", task_table.c.name)
