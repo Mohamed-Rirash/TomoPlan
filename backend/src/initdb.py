@@ -1,6 +1,7 @@
 # if you are using alembic no need for this
 from src.database import engine, metadata, session
 from src.tasks import models
+from src.auth import models
 
 
 async def init():

@@ -1,33 +1,43 @@
-from typing import Optional
-
+from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 
 
-class User_Base(BaseModel):
+class UserBase(BaseModel):
+    email: EmailStr
+    is_active: bool = True
+    is_superuser: bool = False
+    full_name: Optional[str] = None
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
     first_name: str
     last_name: str
 
 
-class User_Create(User_Base):
-    email: EmailStr
-    password: str
+class UserUpdate(UserBase):
+    password: Optional[str] = None
 
 
-class User_login(User_Base):
-    email: EmailStr
-    password: str
+class UserUpdateMe(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
 
 
-class User_ForgotPassword(User_Base):
-    email: EmailStr
+class UpdatePassword(BaseModel):
+    current_password: str
+    new_password: str
 
 
-class ResetRequest(BaseModel):
-    token: str
-    email: EmailStr
-    password: str
+class UserPublic(UserBase):
+    id: str
 
 
-class VerifyUserRequest(BaseModel):
-    token: str
-    email: EmailStr
+class UsersPublic(BaseModel):
+    data: List[UserPublic]
+    count: int
