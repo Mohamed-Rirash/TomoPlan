@@ -9,7 +9,9 @@ dependencies = [
     "asyncpg>=0.30.0",
     "databases>=0.9.0",
     "fastapi[standard,stander]>=0.115.14",
+    "passlib>=1.7.4",
     "psycopg2-binary>=2.9.10",
     "pydantic-settings>=2.10.1",
+    "pyjwt>=2.10.1",
     "sqlalchemy>=2.0.41",
 ]

@@ -1,4 +1,6 @@
+from datetime import timedelta
 from typing import List, Optional
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -41,3 +43,14 @@ class UserPublic(UserBase):
 class UsersPublic(BaseModel):
     data: List[UserPublic]
     count: int
+
+
+class Token(BaseModel):
+    id: str
+    token: str
+    exp: timedelta
+    token_type: str = "bearer"
+
+
+class TokenPayload(BaseModel):
+    sub: str | None = None
