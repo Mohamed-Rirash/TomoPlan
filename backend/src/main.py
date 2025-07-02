@@ -11,10 +11,13 @@ from src.database import session
 from src.initdb import init
 from src.midlewares import LoguruExceptionMiddleware
 from src.tasks.router import router as tasks_router
+from src.notifications.router import router as notif_router
+from src.notifications.scheduler import schedule_reminders
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await schedule_reminders()
     # Initialize tables
     try:
         await init()
@@ -86,3 +89,4 @@ def read_root():
 
 app.include_router(tasks_router)
 app.include_router(auth_router)
+app.include_router(notif_router)
