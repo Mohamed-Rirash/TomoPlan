@@ -1,5 +1,7 @@
+from uuid import UUID
+
 from databases import Database
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from src.dependency import get_db
 from src.tasks.schemas import Task, TaskCreate, TaskUpdate
@@ -26,7 +28,7 @@ async def get_tasks(limit: int = 10, page: int = 1, db: Database = Depends(get_d
 
 # get task by id
 @router.get("/{id}", response_model=Task)
-async def get_task(id: str, db: Database = Depends(get_db)):
+async def get_task(id: UUID, db: Database = Depends(get_db)):
     return await read_task_by_id(id, db)
 
 
@@ -37,12 +39,12 @@ async def add_task(task: TaskCreate, db: Database = Depends(get_db)):
 
 
 # update task
-@router.put("/{id}", response_model=Task)
-async def Edit_task(id: str, task: TaskUpdate, db: Database = Depends(get_db)):
+@router.put("/{id}")
+async def Edit_task(id: UUID, task: TaskUpdate, db: Database = Depends(get_db)):
     return await update_task(id, task, db)
 
 
 # delete task
-@router.delete("/{id}")
-async def Remove_task(id: str, db: Database = Depends(get_db)):
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def Remove_task(id: UUID, db: Database = Depends(get_db)):
     return await delete_task(id, db)
