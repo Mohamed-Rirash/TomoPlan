@@ -12,6 +12,7 @@ from src.tasks.services import (
     read_task_by_id,
     update_task,
 )
+from src.dependency import user_dependecy
 
 router = APIRouter(
     prefix="/tasks",
@@ -22,7 +23,9 @@ router = APIRouter(
 
 # get all task
 @router.get("/", response_model=list[Task])
-async def get_tasks(limit: int = 10, page: int = 1, db: Database = Depends(get_db)):
+async def get_tasks(
+    user: user_dependecy, limit: int = 10, page: int = 1, db: Database = Depends(get_db)
+):
     return await read_all_tasks(limit, page, db)
 
 

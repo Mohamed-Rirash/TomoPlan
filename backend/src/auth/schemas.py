@@ -1,5 +1,6 @@
 from datetime import timedelta
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, EmailStr
 
@@ -46,9 +47,9 @@ class UsersPublic(BaseModel):
 
 
 class Token(BaseModel):
-    id: str
+    id: UUID
     token: str
-    exp: timedelta
+    exp: int
     token_type: str = "bearer"
 
 

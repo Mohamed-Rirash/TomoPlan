@@ -19,7 +19,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 async def create_access_token(subject: str | Any, expires_delta: timedelta):
     expire = datetime.now(timezone.utc) + expires_delta
     to_encode = {
-        "sub": subject,
+        "sub": str(subject),
         "exp": expire,
     }
     encoded_jwt = jwt.encode(

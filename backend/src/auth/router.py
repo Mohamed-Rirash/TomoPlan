@@ -31,7 +31,7 @@ async def register_user(*, data: UserRegister, db: Database = Depends(get_db)):
     return {"message": "User created successfully"}
 
 
-@router.post("/login", response_model=UserPublic)
+@router.post("/login", response_model=Token)
 async def login_user(
     db: Database = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -50,7 +50,9 @@ async def login_user(
     # TODO: 2- create access token
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await create_access_token(user.id, access_token_expires)
-    return Token(id=user.id, token=access_token, exp=access_token_expires)
+    return Token(
+        id=user.id, token=access_token, exp=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
 
 
 @router.patch("/me", response_model=UserPublic)

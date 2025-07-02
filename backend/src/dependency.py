@@ -15,7 +15,7 @@ from src.database import session
 from fastapi import Depends, HTTPException, status
 import jwt
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}auth/login")
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def get_db() -> Generator[Database, None, None]:
@@ -43,4 +43,5 @@ def get_current_user(db: db_dependency, token: token_dependency):
     return user
 
 
+user_dependecy = Annotated[str, Depends(get_current_user)]
 # and return the user object
