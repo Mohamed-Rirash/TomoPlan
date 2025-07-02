@@ -4,10 +4,12 @@ from typing import List
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.logs import logger
 from src.auth.router import router as auth_router
 from src.config import settings
 from src.database import session
 from src.initdb import init
+from src.midlewares import LoguruExceptionMiddleware
 from src.tasks.router import router as tasks_router
 
 
@@ -51,6 +53,14 @@ app = FastAPI(
     version=settings.API_V1_STR,
     description=DESCRIPTION,
     lifespan=lifespan,
+)
+
+# ✅ Add the middleware
+app.add_middleware(LoguruExceptionMiddleware)
+
+# ✅ Optional: configure Loguru
+logger.add(
+    "logs/error.log", level="ERROR", rotation="500 KB", retention="7 days", enqueue=True
 )
 
 
