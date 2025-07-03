@@ -59,7 +59,7 @@ app = FastAPI(
 )
 
 # ✅ Add the middleware
-app.add_middleware(LoguruExceptionMiddleware)
+# app.add_middleware(LoguruExceptionMiddleware)
 
 # ✅ Optional: configure Loguru
 logger.add(
@@ -87,6 +87,6 @@ def read_root():
     return {"message": "Welcome to TomoPlan!"}
 
 
-app.include_router(tasks_router)
-app.include_router(auth_router)
-app.include_router(notif_router)
+app.include_router(tasks_router, prefix=f"{settings.API_V1_STR}")
+app.include_router(auth_router, prefix=f"{settings.API_V1_STR}")
+app.include_router(notif_router, prefix=f"{settings.API_V1_STR}")

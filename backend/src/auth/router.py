@@ -3,7 +3,12 @@ from databases import Database
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src.auth.schemas import Token, UserPublic, UserRegister, UserUpdateMe
+from src.auth.schemas import (
+    LoginResponse,
+    UserPublic,
+    UserRegister,
+    UserUpdateMe,
+)
 from src.auth.security import create_access_token
 from src.auth.services import authenticate_user, create_user, get_user_by_email
 from src.dependency import get_db
@@ -31,7 +36,7 @@ async def register_user(*, data: UserRegister, db: Database = Depends(get_db)):
     return {"message": "User created successfully"}
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=LoginResponse)
 async def login_user(
     db: Database = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -50,9 +55,14 @@ async def login_user(
     # TODO: 2- create access token
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await create_access_token(user.id, access_token_expires)
-    return Token(
-        id=user.id, token=access_token, exp=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    # return Token(token=access_token, exp=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    # return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "id": str(user.id),
+        "exp": settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+    }
 
 
 @router.patch("/me", response_model=UserPublic)

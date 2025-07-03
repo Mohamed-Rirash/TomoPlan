@@ -46,11 +46,11 @@ class UsersPublic(BaseModel):
     count: int
 
 
-class Token(BaseModel):
-    id: UUID
-    token: str
-    exp: int
+class LoginResponse(BaseModel):
+    access_token: str
     token_type: str = "bearer"
+    id: str
+    exp: int
 
 
 class TokenPayload(BaseModel):
