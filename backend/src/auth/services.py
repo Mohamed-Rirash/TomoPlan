@@ -1,8 +1,9 @@
 import uuid
 
 from sqlalchemy import select
-from src.auth.schemas import UserRegister
+
 from src.auth.models import users
+from src.auth.schemas import UserRegister
 from src.auth.security import get_password_hash, verify_password
 
 
@@ -40,3 +41,15 @@ async def get_user_by_id(user_id: uuid.UUID, db):
     query = select(users).where(users.c.id == user_id)
     result = await db.fetch_one(query)
     return result
+
+
+async def update_current_user(user_id: uuid.UUID, data, db):
+    query = users.update().where(users.c.id == user_id).values(**data.dict())
+    await db.execute(query)
+    return {"message": "User updated successfully"}
+
+
+async def update_current_user_password(user_id: uuid.UUID, password: str, db):
+    query = users.update().where(users.c.id == user_id).values(password=password)
+    await db.execute(query)
+    return {"message": "User password updated successfully"}

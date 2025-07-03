@@ -1,18 +1,24 @@
 from datetime import timedelta
-from databases import Database
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.auth.schemas import (
     LoginResponse,
-    UserPublic,
+    UpdatePassword,
     UserRegister,
     UserUpdateMe,
 )
-from src.auth.security import create_access_token
-from src.auth.services import authenticate_user, create_user, get_user_by_email
-from src.dependency import get_db
+from src.auth.security import create_access_token, get_password_hash, verify_password
+from src.auth.services import (
+    authenticate_user,
+    create_user,
+    get_user_by_email,
+    update_current_user,
+    update_current_user_password,
+)
 from src.config import settings
+from src.dependency import db_dependency, user_dependecy
 
 router = APIRouter(
     prefix="/auth",
@@ -21,7 +27,7 @@ router = APIRouter(
 
 
 @router.post("/sign up", status_code=status.HTTP_201_CREATED)
-async def register_user(*, data: UserRegister, db: Database = Depends(get_db)):
+async def register_user(*, data: UserRegister, db: db_dependency):
     # TODO: check if user already exists
     user = await get_user_by_email(data.email, db)
     if user:
@@ -38,7 +44,7 @@ async def register_user(*, data: UserRegister, db: Database = Depends(get_db)):
 
 @router.post("/login", response_model=LoginResponse)
 async def login_user(
-    db: Database = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+    db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()
 ):
     # TODO: 1- authenticate the user
     user = await authenticate_user(form_data.username, form_data.password, db)
@@ -65,6 +71,39 @@ async def login_user(
     }
 
 
-@router.patch("/me", response_model=UserPublic)
-async def update_user_me(data: UserUpdateMe, db: Database = Depends(get_db)):
-    pass
+@router.patch("/me")
+async def update_user_me(user: user_dependecy, data: UserUpdateMe, db: db_dependency):
+    user_id = user.id  # type: ignore
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
+        )
+    # TODO: check if user is active
+    if not user.is_active:  # type: ignore
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active"
+        )
+    return await update_current_user(user_id, data, db)
+
+
+@router.patch("/me/password")
+async def update_user_password(
+    user: user_dependecy, data: UpdatePassword, db: db_dependency
+):
+    # verify the user
+    if not verify_password(data.current_password, user.password):  # type: ignore
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password"
+        )
+    hashed_password = get_password_hash(data.new_password)
+
+    # check if the new password is == convermin the passowrd
+    if user.password == hashed_password:  # type: ignore
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password is same as old password",
+        )
+    return await update_current_user_password(user.id, hashed_password, db)  # type: ignore
+
+
+# then update the user password in the db
