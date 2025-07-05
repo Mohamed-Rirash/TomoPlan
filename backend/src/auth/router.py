@@ -72,7 +72,7 @@ async def login_user(
 
 
 @router.patch("/me")
-async def update_user_me(user: user_dependecy, data: UserUpdateMe, db: db_dependency):
+async def update_user_me(user: user_dependecy, data: UserUpdateMe, db: db_dependency):  # type: ignore
     user_id = user.id  # type: ignore
     if not user_id:
         raise HTTPException(
@@ -88,7 +88,9 @@ async def update_user_me(user: user_dependecy, data: UserUpdateMe, db: db_depend
 
 @router.patch("/me/password")
 async def update_user_password(
-    user: user_dependecy, data: UpdatePassword, db: db_dependency
+    user: user_dependecy,
+    data: UpdatePassword,
+    db: db_dependency,  # type: ignore
 ):
     # verify the user
     if not verify_password(data.current_password, user.password):  # type: ignore

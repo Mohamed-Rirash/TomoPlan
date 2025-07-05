@@ -7,6 +7,7 @@ from sqlalchemy import (
     Column,
     DateTime,
     Enum,
+    ForeignKey,
     Index,
     String,
     Table,
@@ -30,4 +31,5 @@ task_table = Table(
     Column(
         "created_at", DateTime(timezone=True), server_default=func.now(), nullable=False
     ),
+    Column("user_id", Uuid, ForeignKey("users.id"), nullable=False),
 )

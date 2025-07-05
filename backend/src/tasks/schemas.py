@@ -42,3 +42,4 @@ class Task(TaskBase):
     due_date: Optional[datetime] = None
     created_at: datetime
     priority: TaskPriority
+    user_id: UUID
