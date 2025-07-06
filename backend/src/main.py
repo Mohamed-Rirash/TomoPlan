@@ -13,6 +13,7 @@ from src.midlewares import LoguruExceptionMiddleware
 from src.tasks.router import router as tasks_router
 from src.notifications.router import router as notif_router
 from src.notifications.scheduler import schedule_reminders
+from src.agent.router import router as agent_router
 
 
 @asynccontextmanager
@@ -45,8 +46,8 @@ async def lifespan(app: FastAPI):
 
 
 DESCRIPTION = """
-    TomoPlan is an AI-powered task management application that helps you 
-    prioritize your daily tasks by asking you 3 things to do 
+    TomoPlan is an AI-powered task management application that helps you
+    prioritize your daily tasks by asking you 3 things to do
     tomorrow at bedtime, and then organizes and prioritizes your
     progress and stay on track. With TomoPlan, you can avoid wasting your
     time on unimportant tasks and focus on what really matters.
@@ -87,6 +88,7 @@ def read_root():
     return {"message": "Welcome to TomoPlan!"}
 
 
-app.include_router(tasks_router, prefix=f"{settings.API_V1_STR}")
 app.include_router(auth_router, prefix=f"{settings.API_V1_STR}")
+app.include_router(tasks_router, prefix=f"{settings.API_V1_STR}")
 app.include_router(notif_router, prefix=f"{settings.API_V1_STR}")
+app.include_router(agent_router, prefix=f"{settings.API_V1_STR}")
