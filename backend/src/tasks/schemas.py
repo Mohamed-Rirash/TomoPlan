@@ -1,5 +1,5 @@
 # src/tasks/schemas.py
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from uuid import UUID
 from typing import Optional
 
@@ -40,6 +40,6 @@ class Task(TaskBase):
     id: UUID
     is_done: bool
     due_date: Optional[datetime] = None
-    created_at: datetime
+    created_at: date
     priority: TaskPriority
     user_id: UUID

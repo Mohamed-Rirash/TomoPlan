@@ -1,10 +1,13 @@
 # src/tasks/services.py
 import uuid
 from datetime import timezone
-from sqlalchemy import select
 from typing import Sequence, Union
-from .schemas import TaskCreate
+
+from sqlalchemy import select
+
 from .models import task_table
+from .schemas import TaskCreate
+
 
 async def read_all_tasks(limit: int, page: int, db, user_id) -> list[dict]:
     offset = (page - 1) * limit
@@ -26,7 +29,6 @@ async def read_all_tasks(limit: int, page: int, db, user_id) -> list[dict]:
 
 
 async def read_task_by_id(id: uuid.UUID, db, user_id) -> dict | None:
-    # BUG: this my fail due to the  and keyword
     query = select(task_table).where(
         task_table.c.id == id and task_table.c.user_id == user_id
     )
@@ -37,8 +39,6 @@ async def read_task_by_id(id: uuid.UUID, db, user_id) -> dict | None:
         task_dict["id"] = str(task_dict["id"])
         return task_dict
     return None
-
-
 
 
 async def create_tasks(data: Union[TaskCreate, Sequence[TaskCreate]], db, user_id):
@@ -52,8 +52,8 @@ async def create_tasks(data: Union[TaskCreate, Sequence[TaskCreate]], db, user_i
 
     # Prepare all task dicts with unique UUIDs
     for task_data in data_list:
-        task_id = uuid4()
-        task_dict = task_data.dict()
+        task_id = uuid.uuid4()
+        task_dict = task_data.model_dump()
 
         # Ensure UTC-aware due_date
         due_date = task_dict.get("due_date")
@@ -61,7 +61,7 @@ async def create_tasks(data: Union[TaskCreate, Sequence[TaskCreate]], db, user_i
             task_dict["due_date"] = due_date.replace(tzinfo=timezone.utc)
 
         # Convert UUID to string for SQLite compatibility
-        task_dict["id"] = UUID(task_id)
+        task_dict["id"] = task_id
         task_dict["user_id"] = str(user_id)
         task_values.append(task_dict)
 
@@ -101,15 +101,21 @@ async def create_tasks(data: Union[TaskCreate, Sequence[TaskCreate]], db, user_i
 #     task_dict["id"] = str(task_dict["id"])
 
 
-async def update_task(id: uuid.UUID, data, db):
-    task = await read_task_by_id(id, db)
+async def update_task(id: uuid.UUID, data, db, user_id):
+    task = await read_task_by_id(id, db, user_id)
     if not task:
         return None
-    query = task_table.update().where(task_table.c.id == id).values(**data.dict())
+    query = (
+        task_table.update()
+        .where(task_table.c.id == id and task_table.c.user_id == user_id)
+        .values(**data.dict())
+    )
     await db.execute(query)
     return {"message": "Task updated successfully"}
 
 
 async def delete_task(id: uuid.UUID, db, user_id):
-    query = task_table.delete().where(task_table.c.id == id and task_table.c.user_id == user_id)
+    query = task_table.delete().where(
+        task_table.c.id == id and task_table.c.user_id == user_id
+    )
     await db.execute(query)

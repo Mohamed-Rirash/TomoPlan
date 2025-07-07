@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import (
     Boolean,
     Column,
+    Date,
     DateTime,
     Enum,
     ForeignKey,
@@ -28,8 +29,10 @@ task_table = Table(
     Column("due_date", DateTime(timezone=True), nullable=True),
     Column("priority", Enum(TaskPriority), nullable=False, default=TaskPriority.LOW),
     Column("is_done", Boolean, nullable=False),
-    Column(
-        "created_at", DateTime(timezone=True), server_default=func.now(), nullable=False
-    ),
+    Column("created_at", Date, default=func.now(), nullable=False, index=True),
     Column("user_id", Uuid, ForeignKey("users.id"), nullable=False),
 )
+
+Index("tasks_created_at_idx", task_table.c.created_at)
+Index("tasks_user_id_idx", task_table.c.user_id)
+Index("taskidx", task_table.c.id)
