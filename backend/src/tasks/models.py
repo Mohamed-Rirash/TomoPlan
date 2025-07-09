@@ -1,7 +1,5 @@
 # src/tasks/models.py
 import uuid
-from datetime import datetime
-
 from sqlalchemy import (
     Boolean,
     Column,
@@ -18,7 +16,7 @@ from sqlalchemy import (
 )
 
 from src.database import metadata
-from src.tasks.utils import TaskPriority
+from src.utils import TaskPriority
 
 task_table = Table(
     "tasks",

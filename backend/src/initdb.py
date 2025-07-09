@@ -2,6 +2,7 @@
 from src.database import engine, metadata, session
 from src.tasks import models
 from src.auth import models
+from src.agent import models
 
 
 async def init():

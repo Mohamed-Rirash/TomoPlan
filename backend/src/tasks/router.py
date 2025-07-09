@@ -25,7 +25,7 @@ router = APIRouter(
 
 
 # get all task
-@router.get("/", response_model=list[Task])
+@router.get("/tasks", response_model=list[Task])
 async def get_tasks(
     user: user_dependecy, limit: int = 10, page: int = 1, db: Database = Depends(get_db)
 ):
@@ -36,7 +36,7 @@ async def get_tasks(
 
 
 # get task by id
-@router.get("/{id}", response_model=Union[Task, dict])
+@router.get("/task/{id}", response_model=Union[Task, dict])
 async def get_task(id: UUID, user: user_dependecy, db: Database = Depends(get_db)):
     user_id = user.id  # type: ignore
     if not user_id:
@@ -50,14 +50,16 @@ async def get_task(id: UUID, user: user_dependecy, db: Database = Depends(get_db
 
 
 @router.post(
-    "/", response_model=Union[Task, List[Task]], status_code=status.HTTP_201_CREATED
+    "/addtask", response_model=Union[Task, List[Task]], status_code=status.HTTP_201_CREATED
 )
 async def add_task_or_tasks(
     body: Union[TaskCreate, List[TaskCreate]],
     user: user_dependecy,
     db: db_dependency,  # type: ignore
 ):
-    user_id = user["id"]  # type: ignore
+    user_id = user.id  # type: ignore
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
     # If body is a single task
     if isinstance(body, TaskCreate):
@@ -72,7 +74,7 @@ async def add_task_or_tasks(
 
 
 # update task
-@router.put("/{id}")
+@router.put("/task/{id}")
 async def Edit_task(
     id: UUID, user: user_dependecy, task: TaskUpdate, db: Database = Depends(get_db)
 ):

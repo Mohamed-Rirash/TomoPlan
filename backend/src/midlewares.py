@@ -1,10 +1,11 @@
 # middlewares/logger_middleware.py
 
+import traceback
+
+from loguru import logger
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-from loguru import logger
-import traceback
 
 
 class LoguruExceptionMiddleware(BaseHTTPMiddleware):
@@ -16,7 +17,7 @@ class LoguruExceptionMiddleware(BaseHTTPMiddleware):
         except Exception as exc:
             # 🔴 Log the full stacktrace + request info
             logger.opt(exception=False).error(
-                f"❌ Unhandled Exception\n"
+                "❌ Unhandled Exception\n"
                 f"➡️ URL: {request.url}\n"
                 f"➡️ Method: {request.method}\n"
                 f"➡️ Error: {type(exc).__name__}: {str(exc)}"

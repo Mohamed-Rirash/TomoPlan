@@ -1,5 +1,4 @@
 import uuid
-
 from collections.abc import Generator
 from typing import Annotated
 
@@ -28,7 +27,7 @@ token_dependency = Annotated[str, Depends(reusable_oauth2)]
 async def get_current_user(
     db: db_dependency,
     token: Annotated[str, Depends(reusable_oauth2)],
-) -> dict:
+) -> str:
     try:
         jwt_decoded = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
