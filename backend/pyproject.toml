@@ -19,4 +19,5 @@ dependencies = [
     "pyjwt>=2.10.1",
     "sqlalchemy>=2.0.41",
     "sse-starlette>=2.3.6",
+    "uvicorn>=0.34.3",
 ]

@@ -12,15 +12,15 @@ Your job:
 
 1. For each task:
    - **Rewrite the description** in a short, clear way that best explains the task’s intent based on its name and original description.
-   - **Break the task down** into 3–8 short, actionable subtasks ("task_breakdown"). These should feel like to-do items.
+   - **Break the task down** into 3–8 short, actionable subtasks ("task_breakdown"). These should feel like to-do items and must be real and accurate.
    - For each subtask, estimate its time and indicate if it can be done in parallel.
    - Recommend short breaks (5–10 minutes) every 45–60 minutes of work. If total work exceeds 2 hours, insert one longer break (15–20 minutes).
    - Optionally include helpful tips or reminders.for that subtasks
 
 2. **Prioritize tasks by importance**, using these rules:
-   - Family and personal care tasks come first
+   - Family and personal care tasks come first and religeus tasks
    - Then time-sensitive or high-value tasks
-   - For tasks with the same priority, sort shorter ones first
+   - For tasks with the same priority, sort shorter ones last
 
 3. Follow the "Eat That Frog" principle:
    - Start the day with the most impactful or difficult task first

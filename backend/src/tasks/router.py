@@ -4,18 +4,15 @@ from uuid import UUID
 from databases import Database
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.dependency import get_db
+from src.dependency import db_dependency, get_db, user_dependecy
 from src.tasks.schemas import Task, TaskCreate, TaskUpdate
 from src.tasks.services import (
+    create_tasks,
     delete_task,
     read_all_tasks,
     read_task_by_id,
     update_task,
-    create_tasks,
 )
-
-
-from src.dependency import user_dependecy, db_dependency
 
 router = APIRouter(
     prefix="/tasks",
@@ -50,7 +47,9 @@ async def get_task(id: UUID, user: user_dependecy, db: Database = Depends(get_db
 
 
 @router.post(
-    "/addtask", response_model=Union[Task, List[Task]], status_code=status.HTTP_201_CREATED
+    "/addtask",
+    response_model=Union[Task, List[Task]],
+    status_code=status.HTTP_201_CREATED,
 )
 async def add_task_or_tasks(
     body: Union[TaskCreate, List[TaskCreate]],

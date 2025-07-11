@@ -210,6 +210,7 @@ dependencies = [
     { name = "pyjwt" },
     { name = "sqlalchemy" },
     { name = "sse-starlette" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -228,6 +229,7 @@ requires-dist = [
     { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "sqlalchemy", specifier = ">=2.0.41" },
     { name = "sse-starlette", specifier = ">=2.3.6" },
+    { name = "uvicorn", specifier = ">=0.34.3" },
 ]
 
 [[package]]

@@ -21,6 +21,7 @@ async def lifespan(_: FastAPI):
     # Initialize tables
     try:
         await init()
+
     except Exception as e:
         print(f"Failed to initialize database: {e}")
         raise
@@ -45,17 +46,64 @@ async def lifespan(_: FastAPI):
 
 
 DESCRIPTION = """
-    TomoPlan is an AI-powered task management application that helps you
-    prioritize your daily tasks by asking you 3 things to do
-    tomorrow at bedtime, and then organizes and prioritizes your
-    progress and stay on track. With TomoPlan, you can avoid wasting your
-    time on unimportant tasks and focus on what really matters.
+TomoPlan is an AI-powered task management application designed to help you optimize your daily productivity. 
+
+Key Features:
+- 📝 Task Management: Create, update, and delete tasks with priority levels (LOW, MEDIUM, HIGH, CRITICAL)
+- 🤖 AI Assistant: AI-powered task planning and optimization
+- 📱 Real-time Notifications: Stay updated with task reminders and progress
+- 🔄 Task Planning: Plan your daily tasks using AI recommendations
+- 🔐 Secure Authentication: Protected API endpoints with JWT authentication
+
+The API is organized into several key components:
+
+1. Authentication (`/auth`)
+   - User registration and login
+   - Password management
+   - Profile updates
+
+2. Tasks (`/tasks`)
+   - CRUD operations for tasks
+   - Task prioritization
+   - Task filtering and pagination
+   - Task status updates
+
+3. AI Agent (`/agent`)
+   - AI-powered task planning
+   - Task breakdown and optimization
+   - Daily task recommendations
+
+4. Notifications (`/notifications`)
+   - Real-time notification streaming
+   - Task reminder system
+   - Progress updates
+
+Security:
+- All endpoints require JWT authentication (except auth endpoints)
+- CORS enabled for frontend communication
+- Secure password hashing
+
+Environment:
+- Local development: http://localhost:8000
+- Production: Configurable via environment variables
+
+For more information about specific endpoints, use the interactive API documentation available at `/docs` and `/redoc`
 """
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.API_V1_STR,
     description=DESCRIPTION,
     lifespan=lifespan,
+    contact={
+        "name": "TomoPlan Support",
+        "url": "https://github.com/Mohamed-Rirash/TomoPlan",
+        "email": "support@tomoplan.com"
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+    },
 )
 
 # ✅ Add the middleware

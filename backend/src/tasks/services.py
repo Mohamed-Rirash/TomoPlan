@@ -1,4 +1,3 @@
-# src/tasks/services.py
 import uuid
 from datetime import timezone
 from typing import Sequence, Union
@@ -30,7 +29,7 @@ async def read_all_tasks(limit: int, page: int, db, user_id) -> list[dict]:
 
 async def read_task_by_id(id: uuid.UUID, db, user_id) -> dict | None:
     query = select(task_table).where(
-        task_table.c.id == id and task_table.c.user_id == user_id
+        task_table.c.id == id, task_table.c.user_id == user_id
     )
     result = await db.fetch_one(query)
 
@@ -80,34 +79,13 @@ async def create_tasks(data: Union[TaskCreate, Sequence[TaskCreate]], db, user_i
     return [dict(row._mapping) for row in inserted_rows]
 
 
-# async def create_task(data, db, user_id):
-#     task_id = uuid.uuid4()
-#     task_data = data.dict()
-#
-#     # Ensure due_date is UTC if present
-#     due_date = task_data.get("due_date")
-#     if due_date and due_date.tzinfo is None:
-#         task_data["due_date"] = due_date.replace(tzinfo=timezone.utc)
-#
-#     query = task_table.insert().values(user_id=user_id, id=task_id, **task_data)
-#     result = await db.fetch_one(query)
-#
-#     # Fetch the inserted row
-#     query = select(task_table).where(
-#         task_table.c.id == task_id and task_table.c.user_id == user_id
-#     )
-#     result = await db.fetch_one(query)
-#     task_dict = dict(result._mapping)
-#     task_dict["id"] = str(task_dict["id"])
-
-
 async def update_task(id: uuid.UUID, data, db, user_id):
     task = await read_task_by_id(id, db, user_id)
     if not task:
         return None
     query = (
         task_table.update()
-        .where(task_table.c.id == id and task_table.c.user_id == user_id)
+        .where(task_table.c.id == id, task_table.c.user_id == user_id)
         .values(**data.dict())
     )
     await db.execute(query)
@@ -116,6 +94,6 @@ async def update_task(id: uuid.UUID, data, db, user_id):
 
 async def delete_task(id: uuid.UUID, db, user_id):
     query = task_table.delete().where(
-        task_table.c.id == id and task_table.c.user_id == user_id
+        task_table.c.id == id, task_table.c.user_id == user_id
     )
     await db.execute(query)

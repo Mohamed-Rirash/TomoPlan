@@ -28,3 +28,5 @@ class LoguruExceptionMiddleware(BaseHTTPMiddleware):
                 status_code=500,
                 media_type="application/json",
             )
+
+

@@ -1,9 +1,9 @@
-# src/tasks/schemas.py
 from datetime import date, datetime, timezone
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
 from src.tasks.models import TaskPriority
 
 

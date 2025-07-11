@@ -1,12 +1,11 @@
-import uuid
 from fastapi import APIRouter, HTTPException, status
+
 from src.agent.ai_agent import plannner_agent
-from src.agent.services import store_planned_tasks
-from src.dependency import user_dependecy, db_dependency
 from src.agent.schemas import AgentDeps
+from src.agent.services import store_planned_tasks
+from src.dependency import db_dependency, user_dependecy
 
 # from src.agent.models import task_breakdown_table, task_tags_table, agent_task
-from sqlalchemy import outerjoin, select
 
 router = APIRouter(
     prefix="/agent",
@@ -14,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/todoes")
 async def read_from_agent(user: user_dependecy, db: db_dependency):
     user_id = user.id  # type: ignore
     if not user_id:

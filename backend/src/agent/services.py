@@ -1,7 +1,12 @@
-from datetime import date, timedelta, timedelta
-from typing import Union
-from uuid import UUID, uuid4
+import uuid
+from datetime import date, time, timedelta
+from uuid import UUID
+
 from sqlalchemy import select
+
+from src.agent.models import agent_task, task_todo
+from src.agent.schemas import Taskoutput  # Pydantic model
+from src.database import Database  # adjust as needed
 from src.tasks.models import task_table
 
 today = date.today()
@@ -10,7 +15,7 @@ yesterday = today - day_back
 
 
 # fetch tasks from the database by date
-async def get_todays_tasks(user_id: UUID, db):
+async def get_todays_tasks(user_id: UUID, db) -> list | None:
     query = select(
         task_table.c.id,
         task_table.c.name,
@@ -25,15 +30,6 @@ async def get_todays_tasks(user_id: UUID, db):
             tasks.append(row_dict)
         return tasks
     return None
-
-
-import uuid
-from datetime import datetime, time
-from typing import Optional
-
-from src.agent.schemas import Taskoutput  # Pydantic model
-from src.agent.models import agent_task, task_todo
-from src.database import Database  # adjust as needed
 
 
 async def store_planned_tasks(data: list[Taskoutput] | None, db: Database) -> str:
