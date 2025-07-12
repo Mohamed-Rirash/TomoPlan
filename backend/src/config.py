@@ -35,6 +35,9 @@ class Settings(BaseSettings):
 
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_HOST_URL: str = "redis://" + self.REDIS_HOST + ":" + str(self.REDIS_PORT)
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"

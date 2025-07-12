@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, status
 
 from src.agent.ai_agent import plannner_agent
 from src.agent.schemas import AgentDeps
-from src.agent.services import store_planned_tasks
+from src.agent.services import get_users_tasks, store_planned_tasks
+from src.auth.models import users
 from src.dependency import db_dependency, user_dependecy
 
 # from src.agent.models import task_breakdown_table, task_tags_table, agent_task
@@ -30,3 +31,13 @@ async def read_from_agent(user: user_dependecy, db: db_dependency):
     await store_planned_tasks(result.output, db)
 
     return result.output
+
+
+@router.post("/get-tasks")
+async def get_todays_tasks(user: user_dependecy, db: db_dependency):
+    user_id = users.id  # pyright: ignore[reportAttributeAccessIssue]
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="please login first"
+        )
+    return get_users_tasks(user_id, db)

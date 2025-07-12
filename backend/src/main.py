@@ -2,14 +2,18 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from limits.storage import RedisStorage
 from loguru import logger
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from src.agent.router import router as agent_router
 from src.auth.router import router as auth_router
 from src.config import settings
 from src.database import session
 from src.initdb import init
-from src.midlewares import LoguruExceptionMiddleware
+from src.midlewares import LoguruExceptionMiddleware, RateLimitMiddleware
 from src.notifications.router import router as notif_router
 from src.notifications.scheduler import schedule_reminders
 from src.tasks.router import router as tasks_router
@@ -46,7 +50,7 @@ async def lifespan(_: FastAPI):
 
 
 DESCRIPTION = """
-TomoPlan is an AI-powered task management application designed to help you optimize your daily productivity. 
+TomoPlan is an AI-powered task management application designed to help you optimize your daily productivity.
 
 Key Features:
 - 📝 Task Management: Create, update, and delete tasks with priority levels (LOW, MEDIUM, HIGH, CRITICAL)
@@ -98,14 +102,11 @@ app = FastAPI(
     contact={
         "name": "TomoPlan Support",
         "url": "https://github.com/Mohamed-Rirash/TomoPlan",
-        "email": "support@tomoplan.com"
+        "email": "support@tomoplan.com",
     },
-    license_info={
-        "name": "MIT",
-        "url": "https://opensource.org/licenses/MIT"
-    },
+    license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
 )
-
+app.add_middleware(RateLimitMiddleware, rate="5/minute")
 # ✅ Add the middleware
 # app.add_middleware(LoguruExceptionMiddleware)
 

@@ -202,12 +202,15 @@ dependencies = [
     { name = "databases" },
     { name = "fastapi", extra = ["standard"] },
     { name = "jupyterlab" },
+    { name = "limits" },
     { name = "loguru" },
     { name = "passlib" },
     { name = "psycopg2-binary" },
     { name = "pydantic-ai" },
     { name = "pydantic-settings" },
     { name = "pyjwt" },
+    { name = "redis" },
+    { name = "slowapi" },
     { name = "sqlalchemy" },
     { name = "sse-starlette" },
     { name = "uvicorn" },
@@ -221,12 +224,15 @@ requires-dist = [
     { name = "databases", specifier = ">=0.9.0" },
     { name = "fastapi", extras = ["standard", "stander"], specifier = ">=0.115.14" },
     { name = "jupyterlab", specifier = ">=4.4.4" },
+    { name = "limits", extras = ["redis"], specifier = ">=1.6" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "passlib", specifier = ">=1.7.4" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pydantic-ai", specifier = ">=0.3.6" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "pyjwt", specifier = ">=2.10.1" },
+    { name = "redis", specifier = ">=6.2.0" },
+    { name = "slowapi", specifier = "<0.2.0" },
     { name = "sqlalchemy", specifier = ">=2.0.41" },
     { name = "sse-starlette", specifier = ">=2.3.6" },
     { name = "uvicorn", specifier = ">=0.34.3" },
@@ -1224,6 +1230,18 @@ wheels = [
 ]
 
 [[package]]
+name = "limits"
+version = "1.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/80/3e208b8cfdcf9bf85006097a53c93f53a0c23bc711f1e6abfc180ebb4bca/limits-1.6.tar.gz", hash = "sha256:6c0a57b42647f1141f5a7a0a8479b49e4367c24937a01bd9d4063a595c2dd48a", size = 37248, upload_time = "2021-11-27T18:06:01.354Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/74/5ca3439773a981bba174ae8fc99adb96f6496e1e3f7e05275b477a2368ab/limits-1.6-py3-none-any.whl", hash = "sha256:12ae4449cf7daadee43edf4096acd9cb9f4bfdec3a995aa9fbd0f72b0b9af762", size = 17516, upload_time = "2021-11-27T18:05:59.657Z" },
+]
+
+[[package]]
 name = "logfire-api"
 version = "3.22.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1963,6 +1981,15 @@ wheels = [
 ]
 
 [[package]]
+name = "redis"
+version = "6.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/9a/0551e01ba52b944f97480721656578c8a7c46b51b99d66814f85fe3a4f3e/redis-6.2.0.tar.gz", hash = "sha256:e821f129b75dde6cb99dd35e5c76e8c49512a5a0d8dfdc560b2fbd44b85ca977", size = 4639129, upload_time = "2025-05-28T05:01:18.91Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/67/e60968d3b0e077495a8fee89cf3f2373db98e528288a48f1ee44967f6e8c/redis-6.2.0-py3-none-any.whl", hash = "sha256:c8ddf316ee0aab65f04a11229e94a64b2618451dab7a67cb2f77eb799d872d5e", size = 278659, upload_time = "2025-05-28T05:01:16.955Z" },
+]
+
+[[package]]
 name = "referencing"
 version = "0.36.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2173,6 +2200,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload_time = "2024-12-04T17:35:28.174Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload_time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
+name = "slowapi"
+version = "0.1.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "limits" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/40/7b1a61b8844ba392ec87ed61725d195badd1537819137374332d8b32e9a9/slowapi-0.1.6.tar.gz", hash = "sha256:bb20650efb860422d7e1e740bc3d6b781aa9f5a947613979bfc15d3c58082244", size = 12466, upload_time = "2022-08-24T09:49:49.131Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d6/fd/4c1e230eeadccb3a874e112a939025668ed05f1462c1d06aacd1bc8c5fc4/slowapi-0.1.6-py3-none-any.whl", hash = "sha256:cc1dabf8cf88b2acc6cc505cc16ec0446c70d7b8d4110e85f1ded611d47c4454", size = 12774, upload_time = "2022-08-24T09:49:47.372Z" },
 ]
 
 [[package]]

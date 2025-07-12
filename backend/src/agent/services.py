@@ -83,3 +83,10 @@ async def store_planned_tasks(data: list[Taskoutput] | None, db: Database) -> st
         await db.execute_many(task_todo.insert(), breakdown_rows)
 
     return f"✅ Stored {len(task_rows)} tasks and {len(breakdown_rows)} subtasks."
+
+
+# get users tasks with the break down from the agent
+
+
+async def get_users_tasks(user_id: UUID, db: Database):
+    pass
