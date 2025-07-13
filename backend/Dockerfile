@@ -4,6 +4,7 @@ WORKDIR /app
 # Copy the .env file from the root directory
 COPY .env .
 
+ENV UV_HTTP_TIMEOUT=400
 # Copy only the backend directory contents
 COPY backend/ .
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/

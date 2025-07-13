@@ -1,11 +1,15 @@
 # middlewares/logger_middleware.py
 
-import traceback
 
+from limits.storage import RedisStorage
+from limits.strategies import FixedWindowRateLimiter
 from loguru import logger
+from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
+
+from src.config import settings
 
 
 class LoguruExceptionMiddleware(BaseHTTPMiddleware):
@@ -30,21 +34,10 @@ class LoguruExceptionMiddleware(BaseHTTPMiddleware):
             )
 
 
-# src/middlewares/rate_limiter.py
-
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import Response
-from limits.storage import RedisStorage
-from limits.strategies import FixedWindowRateLimiter
-from slowapi.errors import RateLimitExceeded
-from loguru import logger
-import os
-
 class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, rate: str = "5/minute"):
         super().__init__(app)
-        redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+        redis_url = settings.REDIS_HOST_URL
         self.storage = RedisStorage(redis_url)
         self.limiter = FixedWindowRateLimiter(self.storage)
         self.rate = rate
@@ -76,4 +69,3 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 status_code=429,
                 media_type="application/json",
             )
-

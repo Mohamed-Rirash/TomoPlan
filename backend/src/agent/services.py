@@ -89,4 +89,10 @@ async def store_planned_tasks(data: list[Taskoutput] | None, db: Database) -> st
 
 
 async def get_users_tasks(user_id: UUID, db: Database):
-    pass
+    query = (
+        select(agent_task)
+        .select_from(task_todo.join(agent_task))
+        .where(task_todo.c.user_id == user_id)
+    )
+    results = await db.fetch_all(query)
+    return [dict(row) for row in results]

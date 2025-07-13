@@ -1,21 +1,21 @@
-from src.agent.schemas import TodoStatus
-from src.database import metadata
 import uuid
+
 from sqlalchemy import (
     Column,
     DateTime,
     Enum,
+    ForeignKey,
     Integer,
+    String,
     Table,
     Time,
     Uuid,
-    String,
     func,
-    ForeignKey,
 )
 
+from src.agent.schemas import TodoStatus
+from src.database import metadata
 from src.utils import TaskPriority
-
 
 agent_task = Table(
     "agent_task",
@@ -31,6 +31,7 @@ agent_task = Table(
     ),
     Column("created_at", DateTime, server_default=func.now()),
     Column("updated_at", DateTime, server_default=func.now(), onupdate=func.now()),
+    Column("user_id", Uuid, ForeignKey("users.id"), nullable=False),
 )
 
 
