@@ -35,6 +35,10 @@ class Taskoutput(BaseModel):
     updated_at: datetime = datetime.now()
 
 
+class notaskoutput(BaseModel):
+    talk: str
+
+
 class TaskInput(BaseModel):
     task_name: str
     task_description: str
