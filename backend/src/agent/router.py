@@ -22,7 +22,7 @@ async def read_from_agent(user: user_dependecy, db: db_dependency):
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated"
         )
 
-    deps = AgentDeps(user_id=user_id, db=db)
+    deps = AgentDeps(db=db)
 
     result = await plannner_agent.run(
         "based on my task in that tool iwant to plan my day tasks Fetch today’s tasks, plan them step by step, and then store them in the database using `store_tasks`note if theres no task from the tool to get it i want you to return none.",

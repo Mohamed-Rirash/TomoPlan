@@ -13,7 +13,6 @@ from src.tasks.services import (
     read_task_by_id,
     update_task,
 )
-from src.main import limiter
 
 router = APIRouter(
     prefix="/tasks",
@@ -24,7 +23,6 @@ router = APIRouter(
 
 # get all task
 @router.get("/tasks", response_model=list[Task])
-@limiter.limit("5 per minute")
 async def get_tasks(
     user: user_dependecy, limit: int = 10, page: int = 1, db: Database = Depends(get_db)
 ):
@@ -36,7 +34,6 @@ async def get_tasks(
 
 # get task by id
 @router.get("/task/{id}", response_model=Union[Task, dict])
-@limiter.limit("5 per minute")
 async def get_task(id: UUID, user: user_dependecy, db: Database = Depends(get_db)):
     user_id = user.id  # type: ignore
     if not user_id:
@@ -77,7 +74,6 @@ async def add_task_or_tasks(
 
 # update task
 @router.put("/task/{id}")
-@limiter.limit("5 per minute")
 async def Edit_task(
     id: UUID, user: user_dependecy, task: TaskUpdate, db: Database = Depends(get_db)
 ):
@@ -89,7 +85,6 @@ async def Edit_task(
 
 # delete task
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-@limiter.limit("5 per minute")
 async def Remove_task(id: UUID, db: db_dependency, user: user_dependecy):  # type: ignore
     user_id = user.id  # type: ignore
     if not user_id:

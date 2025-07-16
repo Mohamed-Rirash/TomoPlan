@@ -10,16 +10,14 @@ from src.utils import TaskPriority
 
 
 class TodoStatus(str, Enum):
-    PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
-    BLOCKED = "blocked"
 
 
 class Todo(BaseModel):
     Task_num: int = Field(..., description="Task number based on which goes first")
     todo_name: str
-    status: TodoStatus = TodoStatus.PENDING
+    status: TodoStatus = TodoStatus.IN_PROGRESS
     stimated_time: time  # Consider changing to int (minutes)
     depends_on: Optional[List[int]] = Field(
         None, description="list of other breakdown IDs that this todo depends on"
@@ -43,7 +41,6 @@ class TaskInput(BaseModel):
 
 
 class AgentDeps(BaseModel):
-    user_id: UUID
     db: Database
 
     class Config:

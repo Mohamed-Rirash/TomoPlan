@@ -15,13 +15,13 @@ yesterday = today - day_back
 
 
 # fetch tasks from the database by date
-async def get_todays_tasks(user_id: UUID, db) -> list | None:
+async def get_todays_tasks(db) -> list | None:
     query = select(
         task_table.c.id,
         task_table.c.name,
         task_table.c.description,
         task_table.c.created_at,
-    ).where(task_table.c.user_id == user_id, task_table.c.created_at == today)
+    ).where(task_table.c.created_at == today)
     results = await db.fetch_all(query)
     if results:
         tasks = []

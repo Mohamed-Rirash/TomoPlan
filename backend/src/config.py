@@ -11,6 +11,7 @@ from pydantic import (
     PostgresDsn,
     computed_field,
     model_validator,
+    validator,
 )
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -37,7 +38,6 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     REDIS_HOST: str
     REDIS_PORT: int
-    REDIS_HOST_URL: str = "redis://" + self.REDIS_HOST + ":" + str(self.REDIS_PORT)
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"
